@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import pandas as pd
 import numpy as np
+import time
 
 # Initialization of variables
 # Need full header for Leboncoin crawling
@@ -98,7 +99,6 @@ def get_model_price_km_sellertype_phonenumber(url, region):
         url_offer = 'https://www.leboncoin.fr' + offer.a['href']
         req_post = requests.post(url=url_offer, headers=headers)
         soup_post = _handle_request_result_and_build_soup(req_post)
-        print(i)
         km_text = soup_post.find(text="Kilométrage").parent.findNext('div').text
         regex_km = re.compile(r'\d+')
         km_formatted = re.findall(regex_km, km_text)
@@ -107,7 +107,10 @@ def get_model_price_km_sellertype_phonenumber(url, region):
 
         # Region
         list_region.append(region)
-        i += 1
+
+        # Try to bypass the verification system
+        time.sleep(1)
+
     return list_region, list_price, list_model, list_km, list_seller_type, list_price_ref
 
 
